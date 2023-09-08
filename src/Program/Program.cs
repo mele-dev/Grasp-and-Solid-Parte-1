@@ -25,7 +25,8 @@ namespace Full_GRASP_And_SOLID
             recipe.FinalProduct = GetProduct("Café con leche");
             recipe.AddStep(new Step(GetProduct("Café"), 100, GetEquipment("Cafetera"), 120));
             recipe.AddStep(new Step(GetProduct("Leche"), 200, GetEquipment("Hervidor"), 60));
-            recipe.PrintRecipe();
+            double productionCost = GetProductionCost();
+            recipe.PrintRecipe(productionCost);
         }
 
         private static void PopulateCatalogs()
@@ -68,6 +69,29 @@ namespace Full_GRASP_And_SOLID
         {
             var query = from Equipment equipment in equipmentCatalog where equipment.Description == description select equipment;
             return query.FirstOrDefault();
+        }
+
+        /* nuestro metodo es public static. Esto significa que puede ser
+         * llamado desde fuera de esta clase y no necesitamos instanciar
+         * un objeto de esta clase para ello */
+        public static double GetProductionCost()
+        {
+            double sumSupplies = 0;
+            double sumEquipment = 0;
+
+            for (int i = 0; i < productCatalog.Count; i++)
+            {
+                Product currentProduct = (Product)productCatalog[i];
+                sumSupplies += currentProduct.UnitCost;
+            }
+
+            for (int i = 0; i < equipmentCatalog.Count; i++)
+            {
+                Equipment currentEquipment = (Equipment)equipmentCatalog[i];
+                sumEquipment += currentEquipment.HourlyCost;
+            }
+
+            return sumSupplies + sumEquipment;
         }
     }
 }
